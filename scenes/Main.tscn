@@ -11,3 +11,4 @@ color = Color( 0.835294, 0.835294, 0.835294, 1 )
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 position = Vector2( 510, 316 )
+Speed = 200
