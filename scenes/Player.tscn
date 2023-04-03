@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scenes/BowWeapon.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/PNG/Default (64px)/Characters/purple_character.png" type="Texture" id=2]
@@ -20,8 +20,14 @@ tracks/0/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 1.05, 1.05 ) ]
 }
 
+[sub_resource type="CircleShape2D" id=2]
+radius = 21.095
+
 [node name="Player" type="Node2D"]
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
 Speed = 100
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -33,12 +39,16 @@ anims/idle = SubResource( 1 )
 [node name="BowWeapon" parent="." instance=ExtResource( 1 )]
 position = Vector2( -42, 1 )
 rotation = -3.14159
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="Head" type="Sprite" parent="."]
 rotation = -6.28319
 texture = ExtResource( 2 )
 
+[node name="HitBox" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource( 2 )
+
 [connection signal="PrimaryAction" from="." to="BowWeapon" method="Shoot"]
+[connection signal="area_entered" from="HitBox" to="." method="CollisionDetected"]

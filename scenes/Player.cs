@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public class Player : Node2D
 {
@@ -8,6 +7,9 @@ public class Player : Node2D
 
     [Signal]
     public delegate void PrimaryAction();
+
+    [Signal]
+    public delegate void Hit();
 
     protected Vector2 ScreenSize { get; set; } 
 
@@ -42,26 +44,21 @@ public class Player : Node2D
         // Up / Down
         if (Input.IsActionPressed("PlayerMoveUp"))
         {
-            // velocity = this.Position.DirectionTo(GetGlobalMousePosition());
             velocity.y -= 1;
         }
         else if (Input.IsActionPressed("PlayerMoveDown"))
         {
             velocity.y += 1;
-            // velocity = -this.Position.DirectionTo(GetGlobalMousePosition());
         }
 
         // Left / Right
-        // Todo prevent circle movement
         if (Input.IsActionPressed("PlayerMoveRight"))
         {
             velocity.x += 1;
-            // velocity += -this.Position.DirectionTo(GetGlobalMousePosition()).Perpendicular();
         }
         else if (Input.IsActionPressed("PlayerMoveLeft"))
         {
             velocity.x -= 1;
-            // velocity += this.Position.DirectionTo(GetGlobalMousePosition()).Perpendicular();
         }
 
         if (velocity.Length() > 0)
@@ -74,7 +71,14 @@ public class Player : Node2D
         Position = new Vector2
         {
             x = Mathf.Clamp(Position.x, 0, ScreenSize.x),
-            y =Mathf.Clamp(Position.y, 0, ScreenSize.y)
+            y = Mathf.Clamp(Position.y, 0, ScreenSize.y)
         };
+    }
+
+    public void CollisionDetected(Area2D area)
+    {
+        EmitSignal(nameof(Hit));
+
+        area.GetParent().CallDeferred("free");
     }
 }
